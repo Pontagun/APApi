@@ -1,4 +1,4 @@
-from sys import path
+from os import path
 
 import mysql.connector
 

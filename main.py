@@ -6,7 +6,7 @@ from flask import Flask, request
 from flask import jsonify
 from flask_cors import CORS
 
-import DBConnection.Service as service
+import services.service as service
 
 app = Flask(__name__)
 CORS(app)
@@ -19,7 +19,7 @@ weatherToken = "220aabafd04062943967fc23974cc8d5"
 
 
 @app.route('/dustboy')
-def dustboyValue():
+def dustboy_value():
     # username = request.args.get('username')
     arg = request.args
 
@@ -34,7 +34,7 @@ def dustboyValue():
 
 
 @app.route('/iqair')
-def iqairValue():
+def iqair_value():
     arg = request.args
     station = "https://api.airvisual.com/v2/nearest_city?lat=" + arg['lat'] + "&lon=" + arg[
         'lon'] + "&key=" + IQAireToken
@@ -48,7 +48,7 @@ def iqairValue():
 
 
 @app.route('/aqicn')
-def aqicnValue():
+def aqicn_value():
     arg = request.args
 
     station = "https://api.waqi.info/feed/geo:" + arg['lat'] + ";" + arg['lon'] + "/?token=" + aqiCNToken
@@ -62,7 +62,7 @@ def aqicnValue():
 
 
 @app.route('/weather')
-def weatherValue():
+def weather_value():
     arg = request.args
 
     station = "https://api.openweathermap.org/data/2.5/onecall?lat=" \
@@ -78,7 +78,7 @@ def weatherValue():
 
 @app.route('/news')
 def news():
-    json_data = service.getWiki(1)
+    json_data = service.get_wiki(1)
 
     for obj in json_data:
         image = obj["data"]
@@ -90,7 +90,7 @@ def news():
 
 @app.route('/wiki')
 def wiki():
-    json_data = service.getWiki(2)
+    json_data = service.get_wiki(2)
 
     for obj in json_data:
         image = obj["data"]

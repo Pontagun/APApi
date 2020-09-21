@@ -3,7 +3,7 @@ from sys import path
 import mysql.connector
 
 
-def getWiki(tagId):
+def get_wiki(tag_id):
     cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True, charset='utf8')
     cursor = cnx.cursor()
 
@@ -15,7 +15,7 @@ def getWiki(tagId):
         ") x left join "
         "("
         "	select a.id, a.filename, b.data from assets a left join assetData b on a.id = b.id"
-        ") y on x.image = y.filename order by x.id desc;").format(tagId)
+        ") y on x.image = y.filename order by x.id desc;").format(tag_id)
 
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]  # this will extract row headers

@@ -1,0 +1,13 @@
+connexion == 1.1.15
+python_dateutil == 2.6.0
+setuptools >= 21.0.0
+pymysql
+mysqlclient
+flask-sqlalchemy == 2.1.0
+werkzeug == 0.16.1
+flask
+connexion[swagger-ui]
+mysql-connector-python
+requests
+flask_cors
+

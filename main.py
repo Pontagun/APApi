@@ -1,3 +1,4 @@
+import base64
 import json
 import os.path
 
@@ -81,9 +82,7 @@ def news():
     json_data = service.get_wiki(1)
 
     for obj in json_data:
-        image = obj["data"]
-        service.write_file(image, os.path.join(image_path, obj["image"]))
-        del obj["data"]
+        obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
 
     return jsonify(json_data)
 
@@ -93,9 +92,7 @@ def wiki():
     json_data = service.get_wiki(2)
 
     for obj in json_data:
-        image = obj["data"]
-        service.write_file(image, os.path.join(image_path, obj["image"]))
-        del obj["data"]
+        obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
 
     return jsonify(json_data)
 

@@ -4,7 +4,8 @@ import mysql.connector
 
 
 def get_wiki(tag_id):
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True, charset='utf8')
+    cnx = mysql.connector.connect(user='wikijs', password='wikijsrocks', database='wiki', use_unicode=True, charset='utf8',
+                                  port=3307, host="0.0.0.0")
     cursor = cnx.cursor()
 
     query = (

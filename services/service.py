@@ -3,9 +3,32 @@ from os import path
 import mysql.connector
 
 
+def log(s, d, param):
+    cnx = mysql.connector.connect(user='wikijs', password='wikijsrocks', database='wiki', use_unicode=True,
+                                  charset='utf8',
+                                  port=3306, host="db")
+    cursor = cnx.cursor()
+    query = ("create table IF NOT EXISTS airkmLog ("
+             "Id int auto_increment not null primary key,"
+             "Source varchar(255) not null,"
+             "Data TEXT not null,"
+             "Parameter TEXT not null,"
+             "Date TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP"
+             ");")
+
+    cursor.execute(query)
+    insert_sql = ("insert into airkmLog(Source, Data, Parameter) values (\"{}\", \"{}\", \"{}\");").format(s, d, param)
+    cursor.execute(insert_sql)
+    cursor.close()
+
+    cnx.commit()
+    cnx.close()
+
+
 def get_wiki(tag_id):
-    cnx = mysql.connector.connect(user='wikijs', password='wikijsrocks', database='wiki', use_unicode=True, charset='utf8',
-                                  port=3307, host="0.0.0.0")
+    cnx = mysql.connector.connect(user='wikijs', password='wikijsrocks', database='wiki', use_unicode=True,
+                                  charset='utf8',
+                                  port=3306, host="db")
     cursor = cnx.cursor()
 
     query = (

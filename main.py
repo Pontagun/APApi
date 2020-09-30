@@ -21,15 +21,16 @@ weatherToken = "220aabafd04062943967fc23974cc8d5"
 
 @app.route('/dustboy')
 def dustboy_value():
-    # username = request.args.get('username')
     arg = request.args
 
     station = "https://www.cmuccdc.org/api/ccdc/value/" + arg['station']
 
     contents = requests.get(station)
+    aq_data = json.loads(contents.content.decode('utf-8'))
+    service.log('dustboy', aq_data, arg['station'])
 
     if contents.status_code == 200:
-        return jsonify(json.loads(contents.content.decode('utf-8')))
+        return jsonify(aq_data)
     else:
         return None
 
@@ -41,9 +42,11 @@ def iqair_value():
         'lon'] + "&key=" + IQAireToken
 
     contents = requests.get(station)
+    aq_data = json.loads(contents.content.decode('utf-8'))
+    service.log('iqair', aq_data, "lat=" + arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
-        return jsonify(json.loads(contents.content.decode('utf-8')))
+        return jsonify(aq_data)
     else:
         return None
 
@@ -55,9 +58,11 @@ def aqicn_value():
     station = "https://api.waqi.info/feed/geo:" + arg['lat'] + ";" + arg['lon'] + "/?token=" + aqiCNToken
 
     contents = requests.get(station)
+    aq_data = json.loads(contents.content.decode('utf-8'))
+    service.log('aqicn', aq_data, "lat=" + arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
-        return jsonify(json.loads(contents.content.decode('utf-8')))
+        return jsonify(aq_data)
     else:
         return None
 

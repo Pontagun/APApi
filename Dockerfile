@@ -1,9 +1,5 @@
 FROM python:3-alpine
 
-LABEL maintainer="pontagun@gmail.com"
-LABEL version="0.0.1"
-LABEL description="-"
-
 ENV FLASK_APP=main.py
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

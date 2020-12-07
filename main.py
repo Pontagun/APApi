@@ -22,15 +22,18 @@ weatherToken = "220aabafd04062943967fc23974cc8d5"
 @app.route('/dustboy')
 def dustboy_value():
     arg = request.args
-
+    rec = {"suite": []}
     station = "https://www.cmuccdc.org/api/ccdc/value/" + arg['station']
 
     contents = requests.get(station)
     aq_data = json.loads(contents.content.decode('utf-8'))
-    service.log('dustboy', aq_data, arg['station'])
+    recommend_data = service.get_recommendation()
+    rec["suite"] = recommend_data
+
+    service.log('dustboy', str(aq_data), arg['station'])
 
     if contents.status_code == 200:
-        return jsonify(aq_data)
+        return jsonify({**aq_data, **rec})
     else:
         return None
 
@@ -38,15 +41,19 @@ def dustboy_value():
 @app.route('/iqair')
 def iqair_value():
     arg = request.args
+    rec = {"suite": []}
     station = "https://api.airvisual.com/v2/nearest_city?lat=" + arg['lat'] + "&lon=" + arg[
         'lon'] + "&key=" + IQAireToken
 
     contents = requests.get(station)
     aq_data = json.loads(contents.content.decode('utf-8'))
-    service.log('iqair', aq_data, "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+    recommend_data = service.get_recommendation()
+    rec["suite"] = recommend_data
+
+    service.log('iqair', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
-        return jsonify(aq_data)
+        return jsonify({**aq_data, **rec})
     else:
         return None
 
@@ -54,15 +61,18 @@ def iqair_value():
 @app.route('/aqicn')
 def aqicn_value():
     arg = request.args
-
+    rec = {"suite": []}
     station = "https://api.waqi.info/feed/geo:" + arg['lat'] + ";" + arg['lon'] + "/?token=" + aqiCNToken
 
     contents = requests.get(station)
     aq_data = json.loads(contents.content.decode('utf-8'))
-    service.log('aqicn', aq_data, "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+    recommend_data = service.get_recommendation()
+    rec["suite"] = recommend_data
+
+    service.log('aqicn', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
-        return jsonify(aq_data)
+        return jsonify({**aq_data, **rec})
     else:
         return None
 
@@ -98,6 +108,14 @@ def wiki():
 
     for obj in json_data:
         obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
+
+    return jsonify(json_data)
+
+
+@app.route('/recommendation')
+def health():
+    json_data = service.get_recommendation()
+    print(json_data)
 
     return jsonify(json_data)
 

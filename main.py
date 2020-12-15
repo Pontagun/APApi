@@ -12,7 +12,7 @@ import services.service as service
 app = Flask(__name__)
 CORS(app)
 
-image_path = "/Users/Pontagun/Public/Project/APReporter/src/assets/image/"
+# image_path = "/Users/Pontagun/Public/Project/APReporter/src/assets/image/"
 aqiCNToken = "6f0bd0ed71ccee8988757f353b8a920deaa0741a"
 IQAireToken = "82dabd61-cb09-4a09-b82b-8d724f4d6e5e"
 
@@ -95,7 +95,7 @@ def weather_value():
 @app.route('/news')
 def news():
     json_data = service.get_wiki(1)
-
+    print(json_data[0]["data"])
     for obj in json_data:
         obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
 
@@ -115,7 +115,6 @@ def wiki():
 @app.route('/recommendation')
 def health():
     json_data = service.get_recommendation()
-    print(json_data)
 
     return jsonify(json_data)
 

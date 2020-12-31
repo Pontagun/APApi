@@ -6,6 +6,8 @@ import requests
 from flask import Flask, request
 from flask import jsonify
 from flask_cors import CORS
+from datetime import datetime
+from datetime import timedelta
 
 import services.service as service
 
@@ -71,6 +73,15 @@ def aqicn_value():
 
     service.log('aqicn', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
 
+    daily_forecast_pm25 = aq_data["data"]["forecast"]["daily"]["pm25"]
+    daily_forecast_len = len(daily_forecast_pm25)
+    if daily_forecast_len < 9:
+        for i in range(8 - daily_forecast_len):
+            day = str(datetime.strptime(daily_forecast_pm25[daily_forecast_len - 1]["day"], "%Y-%m-%d") + timedelta(
+                days=i + 1))
+            m = {"avg": "-", "day": day.split(" ")[0], "min": "-", "max": "-"}
+            aq_data["data"]["forecast"]["daily"]["pm25"].append(m)
+
     if contents.status_code == 200:
         return jsonify({**aq_data, **rec})
     else:
@@ -117,6 +128,21 @@ def health():
     json_data = service.get_recommendation()
 
     return jsonify(json_data)
+
+
+@app.route('/specialist')
+def specialist():
+    specialists = []
+    json_data = service.get_specialist()
+    data = str(json_data[0]["content"]).splitlines()
+
+    for idx in range(0, len(data), 6):
+        person = {"name": data[idx].replace("## ", ""), "memberof": data[idx + 1].replace("###### ", ""),
+                  "position": data[idx + 2].replace("###### ", ""), "email": data[idx + 3].replace("###### ", ""),
+                  "tel": data[idx + 4].replace("###### ", ""), "id": data[idx + 5].replace("###### ", "")}
+        specialists.append(person)
+
+    return jsonify(specialists)
 
 
 if __name__ == '__main__':

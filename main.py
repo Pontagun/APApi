@@ -123,8 +123,15 @@ def wiki():
     return jsonify(json_data)
 
 
+@app.route('/recommendation', methods=['PUT'])
+def set_recommendation():
+    content = request.json
+    result = service.set_recommendation(content["red"], content["orange"], content["yellow"], content["green"])
+    return result
+
+
 @app.route('/recommendation')
-def health():
+def get_recommendation():
     json_data = service.get_recommendation()
 
     return jsonify(json_data)

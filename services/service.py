@@ -1,5 +1,5 @@
 from os import path
-
+from flask import jsonify
 import mysql.connector
 
 
@@ -78,6 +78,31 @@ def get_recommendation():
     cursor.close()
     cnx.close()
     return json_data
+
+
+def set_recommendation(red, orange, yellow, green):
+    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+                                  charset='utf8',
+                                  port=3306, host="localhost")
+    cursor = cnx.cursor()
+    query = "update airkmInput set Detail='{}' where id = 1".format(red)
+    print(query)
+    cursor.execute(query)
+    cnx.commit()
+    query = "update airkmInput set Detail='{}' where id = 2".format(orange)
+    cursor.execute(query)
+    cnx.commit()
+    query = "update airkmInput set Detail='{}' where id = 3".format(yellow)
+    cursor.execute(query)
+    cnx.commit()
+    query = "update airkmInput set Detail='{}' where id = 4".format(green)
+    cursor.execute(query)
+    cnx.commit()
+
+
+    cursor.close()
+    cnx.close()
+    return jsonify({'result': 200})
 
 
 def get_specialist():

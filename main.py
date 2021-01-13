@@ -106,7 +106,6 @@ def weather_value():
 @app.route('/news')
 def news():
     json_data = service.get_wiki(1)
-    print(json_data[0]["data"])
     for obj in json_data:
         obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
 
@@ -116,9 +115,6 @@ def news():
 @app.route('/wiki')
 def wiki():
     json_data = service.get_wiki(2)
-
-    for obj in json_data:
-        obj["data"] = base64.b64encode(obj["data"]).decode("utf-8")
 
     return jsonify(json_data)
 

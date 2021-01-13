@@ -11,9 +11,15 @@ import mysql.connector
 #                               port=3306, host="db")
 
 def log(s, d, param):
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    cnx = mysql.connector.connect(user='wikijs',
+                                  password='wikijsrocks',
+                                  database='wiki',
+                                  use_unicode=True,
                                   charset='utf8',
-                                  port=3306, host="localhost")
+                                  port=3306, host="db")
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cursor = cnx.cursor()
     query = ("create table IF NOT EXISTS airkmLog ("
              "Id int auto_increment not null primary key,"
@@ -35,20 +41,32 @@ def log(s, d, param):
 
 
 def get_wiki(tag_id):
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    cnx = mysql.connector.connect(user='wikijs',
+                                  password='wikijsrocks',
+                                  database='wiki',
+                                  use_unicode=True,
                                   charset='utf8',
-                                  port=3306, host="localhost")
+                                  port=3306, host="db")
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cursor = cnx.cursor()
-    query = (
-        "select x.id, x.path, x.title, x.description, x.image, y.data "
-        "from "
-        "(	select ps.id, ps.path, ps.title, ps.description, pt.tagId ,substr(ps.content, 34, locate('\"></figure>', "
-        "ps.content) - 34) image "
-        "	from pages ps inner join pageTags pt on ps.id = pt.pageId where pt.tagId = {}"
-        ") x left join "
-        "("
-        "	select a.id, a.filename, b.data from assets a left join assetData b on a.id = b.id"
-        ") y on x.image = y.filename where y.data is not Null order by x.id desc;").format(tag_id)
+    if (tag_id == 1):
+        query = (
+            "select x.id, x.path, x.title, x.description, x.image, y.data "
+            "from "
+            "(	select ps.id, ps.path, ps.title, ps.description, pt.tagId ,substr(ps.content, 34, locate('\"></figure>', "
+            "ps.content) - 34) image "
+            "	from pages ps inner join pageTags pt on ps.id = pt.pageId where pt.tagId = {}"
+            ") x left join "
+            "("
+            "	select a.id, a.filename, b.data from assets a left join assetData b on a.id = b.id"
+            ") y on x.image = y.filename where y.data is not Null order by x.id desc;").format(tag_id)
+    elif (tag_id == 2):
+        query = (
+            "select ps.id, ps.path, ps.title, pt.tagId "
+            "from pages ps inner join pageTags pt on ps.id = pt.pageId "
+            "where pt.tagId = {} order by ps.title asc").format(tag_id)
 
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]  # this will extract row headers
@@ -63,9 +81,15 @@ def get_wiki(tag_id):
 
 
 def get_recommendation():
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    cnx = mysql.connector.connect(user='wikijs',
+                                  password='wikijsrocks',
+                                  database='wiki',
+                                  use_unicode=True,
                                   charset='utf8',
-                                  port=3306, host="localhost")
+                                  port=3306, host="db")
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cursor = cnx.cursor()
     query = "select Id, Color, Detail from airkmInput order by id;"
     cursor.execute(query)
@@ -81,9 +105,15 @@ def get_recommendation():
 
 
 def set_recommendation(red, orange, yellow, green):
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    cnx = mysql.connector.connect(user='wikijs',
+                                  password='wikijsrocks',
+                                  database='wiki',
+                                  use_unicode=True,
                                   charset='utf8',
-                                  port=3306, host="localhost")
+                                  port=3306, host="db")
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cursor = cnx.cursor()
     query = "update airkmInput set Detail='{}' where id = 1".format(red)
     print(query)
@@ -99,16 +129,21 @@ def set_recommendation(red, orange, yellow, green):
     cursor.execute(query)
     cnx.commit()
 
-
     cursor.close()
     cnx.close()
     return jsonify({'result': 200})
 
 
 def get_specialist():
-    cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    cnx = mysql.connector.connect(user='wikijs',
+                                  password='wikijsrocks',
+                                  database='wiki',
+                                  use_unicode=True,
                                   charset='utf8',
-                                  port=3306, host="localhost")
+                                  port=3306, host="db")
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cursor = cnx.cursor()
     query = "select content from pages where title = \"Specialist\";"
     cursor.execute(query)

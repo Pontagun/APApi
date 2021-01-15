@@ -3,23 +3,21 @@ from flask import jsonify
 import mysql.connector
 
 
-# cnx = mysql.connector.connect(user='wikijs',
-#                               password='wikijsrocks',
-#                               database='wiki',
-#                               use_unicode=True,
-#                               charset='utf8',
-#                               port=3306, host="db")
-
-def log(s, d, param):
+def db_connector():
+    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
+    #                               charset='utf8',
+    #                               port=3306, host="localhost")
     cnx = mysql.connector.connect(user='wikijs',
                                   password='wikijsrocks',
                                   database='wiki',
                                   use_unicode=True,
                                   charset='utf8',
                                   port=3306, host="db")
-    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
-    #                               charset='utf8',
-    #                               port=3306, host="localhost")
+    return cnx
+
+
+def log(s, d, param):
+    cnx = db_connector()
     cursor = cnx.cursor()
     query = ("create table IF NOT EXISTS airkmLog ("
              "Id int auto_increment not null primary key,"
@@ -41,15 +39,7 @@ def log(s, d, param):
 
 
 def get_wiki(tag_id):
-    cnx = mysql.connector.connect(user='wikijs',
-                                  password='wikijsrocks',
-                                  database='wiki',
-                                  use_unicode=True,
-                                  charset='utf8',
-                                  port=3306, host="db")
-    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
-    #                               charset='utf8',
-    #                               port=3306, host="localhost")
+    cnx = db_connector()
     cursor = cnx.cursor()
     if (tag_id == 1):
         query = (
@@ -81,16 +71,19 @@ def get_wiki(tag_id):
 
 
 def get_recommendation():
-    cnx = mysql.connector.connect(user='wikijs',
-                                  password='wikijsrocks',
-                                  database='wiki',
-                                  use_unicode=True,
-                                  charset='utf8',
-                                  port=3306, host="db")
-    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
-    #                               charset='utf8',
-    #                               port=3306, host="localhost")
+    cnx = db_connector()
     cursor = cnx.cursor()
+
+    query = ("CREATE TABLE IF NOT EXISTS airkmInput ("
+             "  Id int NOT NULL AUTO_INCREMENT,"
+             "  Color varchar(255) NOT NULL,"
+             "  Ceil text NOT NULL,"
+             "  Detail text NOT NULL,"
+             "  Date timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,"
+             "  PRIMARY KEY (`Id`)"
+             ") ENGINE=InnoDB AUTO_INCREMENT=0 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;")
+    cursor.execute(query)
+
     query = "select Id, Color, Detail from airkmInput order by id;"
     cursor.execute(query)
     row_headers = [x[0] for x in cursor.description]  # this will extract row headers
@@ -105,27 +98,22 @@ def get_recommendation():
 
 
 def set_recommendation(red, orange, yellow, green):
-    cnx = mysql.connector.connect(user='wikijs',
-                                  password='wikijsrocks',
-                                  database='wiki',
-                                  use_unicode=True,
-                                  charset='utf8',
-                                  port=3306, host="db")
-    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
-    #                               charset='utf8',
-    #                               port=3306, host="localhost")
+    cnx = db_connector()
     cursor = cnx.cursor()
-    query = "update airkmInput set Detail='{}' where id = 1".format(red)
-    print(query)
+
+    query = "delete from airkmInput"
+    cursor.execute(query)
+
+    query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('แดง', '200', red)
     cursor.execute(query)
     cnx.commit()
-    query = "update airkmInput set Detail='{}' where id = 2".format(orange)
+    query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('ส้ม', '150', orange)
     cursor.execute(query)
     cnx.commit()
-    query = "update airkmInput set Detail='{}' where id = 3".format(yellow)
+    query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('เหลือง', '100', yellow)
     cursor.execute(query)
     cnx.commit()
-    query = "update airkmInput set Detail='{}' where id = 4".format(green)
+    query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('เขียว', '50', green)
     cursor.execute(query)
     cnx.commit()
 
@@ -135,15 +123,7 @@ def set_recommendation(red, orange, yellow, green):
 
 
 def get_specialist():
-    cnx = mysql.connector.connect(user='wikijs',
-                                  password='wikijsrocks',
-                                  database='wiki',
-                                  use_unicode=True,
-                                  charset='utf8',
-                                  port=3306, host="db")
-    # cnx = mysql.connector.connect(user='root', password='Pontakorn2', database='wiki', use_unicode=True,
-    #                               charset='utf8',
-    #                               port=3306, host="localhost")
+    cnx = db_connector()
     cursor = cnx.cursor()
     query = "select content from pages where title = \"Specialist\";"
     cursor.execute(query)

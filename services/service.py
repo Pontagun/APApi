@@ -97,7 +97,7 @@ def get_recommendation():
     return json_data
 
 
-def set_recommendation(red, orange, yellow, green):
+def set_recommendation(red, orange, yellow, green, blue):
     cnx = db_connector()
     cursor = cnx.cursor()
 
@@ -114,6 +114,9 @@ def set_recommendation(red, orange, yellow, green):
     cursor.execute(query)
     cnx.commit()
     query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('เขียว', '50', green)
+    cursor.execute(query)
+    cnx.commit()
+    query = "insert into airkmInput(color, ceil, Detail) values('{}', '{}', '{}');".format('ฟ้า', '50', blue)
     cursor.execute(query)
     cnx.commit()
 

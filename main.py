@@ -21,6 +21,26 @@ IQAireToken = "82dabd61-cb09-4a09-b82b-8d724f4d6e5e"
 weatherToken = "220aabafd04062943967fc23974cc8d5"
 
 
+@app.route('/air4thai')
+def air4thai_value():
+    arg = request.args
+    rec = {"suite": []}
+    station = "https://airkm-a4th.datascience.cmu.ac.th/api/latest?lat=" + arg['lat'] + "&long=" + arg[
+        'lon']
+
+    contents = requests.get(station)
+    aq_data = json.loads(contents.content.decode('utf-8'))
+    recommend_data = service.get_recommendation()
+    rec["suite"] = recommend_data
+
+    service.log('air4thai', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+
+    if contents.status_code == 200:
+        return jsonify({**aq_data, **rec})
+    else:
+        return None
+
+
 @app.route('/dustboy')
 def dustboy_value():
     arg = request.args
@@ -122,7 +142,8 @@ def wiki():
 @app.route('/recommendation', methods=['PUT'])
 def set_recommendation():
     content = request.json
-    result = service.set_recommendation(content["red"], content["orange"], content["yellow"], content["green"])
+    result = service.set_recommendation(content["red"], content["orange"], content["yellow"], content["green"],
+                                        content["blue"])
     return result
 
 

@@ -16,8 +16,6 @@ CORS(app)
 
 # image_path = "/Users/Pontagun/Public/Project/APReporter/src/assets/image/"
 aqiCNToken = "6f0bd0ed71ccee8988757f353b8a920deaa0741a"
-IQAireToken = "82dabd61-cb09-4a09-b82b-8d724f4d6e5e"
-
 weatherToken = "220aabafd04062943967fc23974cc8d5"
 
 
@@ -25,15 +23,16 @@ weatherToken = "220aabafd04062943967fc23974cc8d5"
 def air4thai_value():
     arg = request.args
     rec = {"suite": []}
-    station = "https://airkm-a4th.datascience.cmu.ac.th/api/latest?lat=" + arg['lat'] + "&long=" + arg[
-        'lon']
+    station = "https://airkm-a4th.datascience.cmu.ac.th/api/latest?lat=" + \
+        arg['lat'] + "&long=" + arg['lon']
 
     contents = requests.get(station)
     aq_data = json.loads(contents.content.decode('utf-8'))
     recommend_data = service.get_recommendation()
     rec["suite"] = recommend_data
 
-    service.log('air4thai', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+    service.log('air4thai', str(aq_data), "lat=" +
+                arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
         return jsonify({**aq_data, **rec})
@@ -64,15 +63,20 @@ def dustboy_value():
 def iqair_value():
     arg = request.args
     rec = {"suite": []}
-    station = "https://api.airvisual.com/v2/nearest_city?lat=" + arg['lat'] + "&lon=" + arg[
-        'lon'] + "&key=" + IQAireToken
+    lat = arg['lat']
+    lon = arg['lon']
+    url = "https://airkm-backend.docker.titipat.net/api/iqair"
 
-    contents = requests.get(station)
+    contents = requests.get(url, params={
+        'lat': lat,
+        'lon': lon
+    })
     aq_data = json.loads(contents.content.decode('utf-8'))
     recommend_data = service.get_recommendation()
     rec["suite"] = recommend_data
 
-    service.log('iqair', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+    service.log('iqair', str(aq_data), "lat=" +
+                arg['lat'] + "&lon=" + arg['lon'])
 
     if contents.status_code == 200:
         return jsonify({**aq_data, **rec})
@@ -84,14 +88,16 @@ def iqair_value():
 def aqicn_value():
     arg = request.args
     rec = {"suite": []}
-    station = "https://api.waqi.info/feed/geo:" + arg['lat'] + ";" + arg['lon'] + "/?token=" + aqiCNToken
+    station = "https://api.waqi.info/feed/geo:" + \
+        arg['lat'] + ";" + arg['lon'] + "/?token=" + aqiCNToken
 
     contents = requests.get(station)
     aq_data = json.loads(contents.content.decode('utf-8'))
     recommend_data = service.get_recommendation()
     rec["suite"] = recommend_data
 
-    service.log('aqicn', str(aq_data), "lat=" + arg['lat'] + "&lon=" + arg['lon'])
+    service.log('aqicn', str(aq_data), "lat=" +
+                arg['lat'] + "&lon=" + arg['lon'])
 
     daily_forecast_pm25 = aq_data["data"]["forecast"]["daily"]["pm25"]
     daily_forecast_len = len(daily_forecast_pm25)
